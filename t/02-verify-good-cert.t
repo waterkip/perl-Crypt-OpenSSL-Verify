@@ -36,7 +36,7 @@ ok($cert);
 my $ret = $v->verify($cert);
 ok($ret);
 
-my $v = Crypt::OpenSSL::Verify->new(
+$v = Crypt::OpenSSL::Verify->new(
     CAfile => 't/cacert.pem',
     CApath => '/etc/ssl/certs',
     noCAfile => 0,
@@ -44,7 +44,7 @@ my $v = Crypt::OpenSSL::Verify->new(
     );
 ok($v);
 
-my $ret = $v->verify($cert);
+$ret = $v->verify($cert);
 ok($ret);
 
 done_testing;

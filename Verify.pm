@@ -157,10 +157,12 @@ need to verify that the signing certificate is valid.
 
 =head1 METHODS
 
-=head2 new(CAfile => $cafile_path
-           CApath => '/etc/ssl/certs',     # Optional
-           no-CAfile => 1,                 # Optional
-           no-CApath => 0                  # Optional
+=head2 new()
+           (
+               CAfile => $cafile_path
+               CApath => '/etc/ssl/certs',     # Optional
+               no-CAfile => 1,                 # Optional
+               no-CApath => 0                  # Optional
            );
 
 Constructor. Returns an OpenSSL Verify instance, set up with the given CA.

@@ -6,14 +6,18 @@ use File::Slurp qw(read_file);
 my $v = Crypt::OpenSSL::Verify->new('t/cacert.pem');
 ok($v);
 
-my $text = read_file('t/cert.pem');
-like($text, qr/E1dSkFDk4Jix1M19WqRGMla8/);
+my $text = read_file('t/cert-expired.pem');
+like($text, qr/BhMCQ0ExFjAUBgNVBAgMDU5ldyBC/);
 
 my $cert = Crypt::OpenSSL::X509->new_from_string($text);
 ok($cert);
 
-my $ret = $v->verify($cert);
-ok($ret);
+my $ret;;
+eval {
+        $ret = $v->verify($cert);
+};
+ok($@ =~ /^verify: certificate has expired/);
+ok(!$ret);
 
 $v = Crypt::OpenSSL::Verify->new(
     CAfile => 't/cacert.pem',
@@ -23,7 +27,11 @@ $v = Crypt::OpenSSL::Verify->new(
     );
 ok($v);
 
-$ret = $v->verify($cert);
-ok($ret);
+my $ret = undef;
+eval {
+        $ret = $v->verify($cert);
+};
+ok($@ =~ /^verify: certificate has expired/);
+ok(!$ret);
 
 done_testing;

@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+BEGIN { unshift @INC, '.' }
+
 use inc::Module::Install 0.91;
 use Module::Install::AuthorRequires;
 use Module::Install::AuthorTests;

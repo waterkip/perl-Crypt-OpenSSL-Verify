@@ -1,0 +1,10 @@
+MANIFEST
+MYMETA.json
+MYMETA.yml
+Makefile
+Verify.bs
+Verify.c
+Verify.o
+blib/*
+pm_to_blib
+Crypt-OpenSSL-Verify-*

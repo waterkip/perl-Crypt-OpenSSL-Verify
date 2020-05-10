@@ -132,8 +132,8 @@ Crypt::OpenSSL::Verify - OpenSSL Verify certificate verification in XS.
   my $ca = Crypt::OpenSSL::Verify->new(
                 CAfile => 't/cacert.pem',
                 CApath => '/etc/ssl/certs',     # Optional
-                no-CAfile => 1,                 # Optional
-                no-CApath => 0                  # Optional
+                noCAfile => 1,                  # Optional
+                noCApath => 0                   # Optional
                 );
 
   OR
@@ -161,8 +161,8 @@ need to verify that the signing certificate is valid.
            (
                CAfile => $cafile_path
                CApath => '/etc/ssl/certs',     # Optional
-               no-CAfile => 1,                 # Optional
-               no-CApath => 0                  # Optional
+               noCAfile => 1,                  # Optional
+               noCApath => 0                   # Optional
            );
 
 Constructor. Returns an OpenSSL Verify instance, set up with the given CA.
@@ -171,8 +171,8 @@ Arguments:
 
  * CAfile => $cafile_path       - path to a file containing the CA certificate
  * CApath => $ca_path           - path to a directory containg hashed CA Certificates
- * no-CAfile => 0 or 1          - Default CAfile should not be loaded if TRUE
- * no-CApath => 0 or 1          - Default CApath should not be loaded if TRUE
+ * noCAfile => 0 or 1           - Default CAfile should not be loaded if TRUE
+ * noCApath => 0 or 1           - Default CApath should not be loaded if TRUE
 
 =head2  new('t/cacert.pem');
 

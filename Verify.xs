@@ -173,20 +173,20 @@ Crypt::OpenSSL::Verify _new(class, options)
             CAfile = *svp;
         }
 
-        if (hv_exists(myhash, "no-CAfile", 9)) {
-            svp = hv_fetch(myhash, "no-CAfile", 9, 0);
+        if (hv_exists(myhash, "noCAfile", strlen("noCAfile"))) {
+            svp = hv_fetch(myhash, "noCAfile", strlen("noCAfile"), 0);
             if (SvIOKp(*svp)) {
                 noCAfile = SvIV(*svp);
             }
         }
 
-        if (hv_exists(myhash, "CApath", 6)) {
-            svp = hv_fetch(myhash, "CApath", 6, 0);
+        if (hv_exists(myhash, "CApath", strlen("CApath"))) {
+            svp = hv_fetch(myhash, "CApath", strlen("CApath"), 0);
             CApath = *svp;
         }
 
-        if (hv_exists(myhash, "no-CApath", 9)) {
-            svp = hv_fetch(myhash, "no-CApath", 9, 0);
+        if (hv_exists(myhash, "noCApath", strlen("noCApath"))) {
+            svp = hv_fetch(myhash, "noCApath", strlen("noCApath"), 0);
             if (SvIOKp(*svp)) {
                 noCApath = SvIV(*svp);
             }

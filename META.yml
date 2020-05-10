@@ -4,8 +4,8 @@ author:
   - 'Timothy Legge <timlegge@gmail.com>'
 build_requires:
   ExtUtils::MakeMaker: 6.59
-  Test::More: '0.88'
   File::Slurp: 0
+  Test::More: '0.88'
 configure_requires:
   ExtUtils::MakeMaker: 6.59
 distribution_type: module

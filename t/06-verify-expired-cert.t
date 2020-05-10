@@ -2,6 +2,12 @@ use Test::More;
 use Crypt::OpenSSL::Verify;
 use Crypt::OpenSSL::X509;
 use File::Slurp qw(read_file);
+BEGIN {
+  unless ($ENV{AUTHOR_TESTING}) {
+    print qq{1..0 # SKIP these tests are for testing by the author\n};
+    exit
+  }
+}
 
 my $v = Crypt::OpenSSL::Verify->new('t/cacert.pem');
 ok($v);

@@ -26,11 +26,11 @@ jobs:
       - uses: actions/checkout@v1
       - name: Install Dependencies
         run: |
+          apt-get install make gcc libssl-dev;
+          perl Makefile.PL;
           curl -sL https://cpanmin.us/ | perl - -nq --with-develop --installdeps .
       - name: Build Module
         run: |
-          apt-get install make gcc libssl-dev;
-          perl Makefile.PL;
           make
       - name: Run Tests
         run: prove -lr -l -b -I inc t

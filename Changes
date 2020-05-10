@@ -1,0 +1,9 @@
+Version History
+
+0.11 TBD
+    Bugfixes:
+        44ea736 Fixes #1 Pod format is bad
+        00f91c0 Initial version with Crypt::OpenSSL::VerifyX509 compatibility
+
+0.10 Sun, 10 May 2020 03:05:33 GMT
+    Initial version with Crypt::OpenSSL::VerifyX509 compatibility

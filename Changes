@@ -1,5 +1,14 @@
 Version History
 
+TBD
+
+    Bugfixes
+
+        7920d43 Fixes #5 - Replace Certs and CAs with files that will pass without overides
+        aa3d47b Fixes #4 - Test re-declare variables
+        510ec69 Add to .gitignore and Update time or v0.10
+
+
 0.10 Sun May 10 2020 12:45:28 UTC
     Bugfixes:
         e55f868 Fixes #3 - Change log is missing

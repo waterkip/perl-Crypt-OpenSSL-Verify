@@ -20,6 +20,19 @@ int trust_expired = 0;
 int trust_no_local = 0;
 int trust_onelogin = 0;
 
+=head1 NAME
+
+Verify.xs - C interface to OpenSSL to verify certificates
+
+=head1 METHODS
+
+=head2 verify_cb(int ok, X509_STORE_CTX * ctx)
+The C equivalent of the verify_callback perl sub
+This code is due to be removed if the perl version
+is permanent
+
+=cut
+
 int verify_cb(int ok, X509_STORE_CTX * ctx)
 {
 
@@ -77,6 +90,26 @@ int verify_cb(int ok, X509_STORE_CTX * ctx)
     }
     return ok;
 }
+
+=head2 int cb1(ok, ctx)
+
+The link to the Perl verify_callback() sub.  This called by OpenSSL
+during the verify of the certificates and in turn passes the parameters
+to the Perl verify_callback() sub.  It gets a return code from Perl
+and returns it to OpenSSL
+
+=head3 Parameters
+=over
+=item ok
+    * ok - the result of the certificate verification in OpenSSL
+            ok = 1, !ok = 0
+
+=item ctx
+    * ctx - Pointer to the X509_Store_CTX that OpenSSL includes the
+            error codes in
+=back
+=cut
+
 
 static SV *callback = (SV *) NULL;
 
@@ -139,6 +172,12 @@ BOOT:
     ERR_load_ERR_strings();
     OpenSSL_add_all_algorithms();
 
+=head2 register_verify_cb()
+
+Called by the Perl code to register which Perl sub is
+the OpenSSL Verify Callback
+
+=cut
 void register_verify_cb(fn)
     SV *fn
 
@@ -149,6 +188,18 @@ void register_verify_cb(fn)
             callback = newSVsv(fn);
         else
             SvSetSV(callback, fn);
+
+=head _new
+
+The main function to setup the OpenSSL Store to hold the CAfile and to
+configure the options for the verification.  In particular it sets the
+CAfile, and CApat, noCAfile and noCApath if provided.
+
+It also sets the callback function and returns a X509_Store
+
+FIXME: As I think of it this should return the self that hold the X509_Store
+
+=cut
 
 Crypt::OpenSSL::Verify _new(class, options)
     SV *class
@@ -273,6 +324,11 @@ Crypt::OpenSSL::Verify _new(class, options)
 
         RETVAL
 
+=head2 ctx_error_code(ctx)
+Called by the Perl code's verify_callback() to get the error code
+from SSL from the ctx
+
+=cut
 int ctx_error_code(ctx)
     UV ctx;
 
@@ -286,6 +342,12 @@ int ctx_error_code(ctx)
     OUTPUT:
 
         RETVAL
+
+=head2 verify(store, x509)
+The actual verify function that calls OpenSSL to verify the x509 Cert that
+has been passed in as a parameter against the store that was setup in _new()
+
+=cut
 
 int verify(store, x509)
     Crypt::OpenSSL::Verify store;

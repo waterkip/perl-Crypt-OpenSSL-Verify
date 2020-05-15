@@ -183,13 +183,14 @@ need to verify that the signing certificate is valid.
 =head1 METHODS
 
 =head2 new()
+=over
            (
                CAfile => $cafile_path
                CApath => '/etc/ssl/certs',     # Optional
                noCAfile => 1,                  # Optional
                noCApath => 0                   # Optional
            );
-
+=back
 Constructor. Returns an OpenSSL Verify instance, set up with the given CA.
 
 Arguments:

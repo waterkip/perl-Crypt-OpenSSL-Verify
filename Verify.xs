@@ -20,7 +20,7 @@ struct OPTIONS {
    bool  trust_no_local;
    bool  trust_onelogin;
 };
-
+=pod
 =head1 NAME
 
 Verify.xs - C interface to OpenSSL to verify certificates

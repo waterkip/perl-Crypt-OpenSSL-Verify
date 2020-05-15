@@ -1,7 +1,12 @@
 Version History
 
-TBD
+0.12-TRIAL
+    Bugfixes
+        9156a97 Merge pull request #7 from timlegge/new-as-object
+        92ffc20 Fixes #8 openssh returns different error on freebsd
+        1c12f9c Update Changes
 
+0.11-TRIAL Fri May 15 2020 00:10:51 UTC
     Bugfixes
         176adeb Change to use object for Crypt::OpenSSL::Verify
         6af1067 Update LICENSE info and add Documentation to Verify.xs

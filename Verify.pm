@@ -20,17 +20,25 @@ BOOT_XS: {
 }
 
 sub new {
-    push @_, undef if @_ % 3;
+    if ( scalar(@_) == 2 ) {
+        # Backward compatability Crypt::OpenSSL::Verify
+        # only one parameter is the CAfile name
+        push @_, undef;
+    }
     my ( $class, %args ) = @_;
     my $self    = {};
     my $options = \%args;
-    use Data::Dumper;
     if ( exists $options->{CAfile} ) {
         $self = {
+            CAfile         => $options->{CAfile},
+            CApath         => $options->{CApath},
+            noCAfile       => $options->{noCAfile},
+            noStore        => $options->{noStore},
             trust_expired  => $options->{trust_expired},
             trust_no_local => $options->{trust_no_local},
             trust_onelogin => $options->{trust_onelogin},
-            strict_certs   => $options->{strict_certs}
+            strict_certs   => $options->{strict_certs},
+            STORE          => 0
         };
     }
     else {
@@ -39,10 +47,27 @@ sub new {
             for ( keys %args ) {
                 my %arg = ( CAfile => $_ );
                 %args = %arg;
+                $self = {
+                    CAfile         => $_,
+                    strict_certs   => 0, # Maintain original functionality
+                    STORE          => 0
+                }
+
             }
         }
     }
-    return _new( $class, \%args );
+    my $opt = $self;
+    my $store = _new( $class, $opt ) ;
+    if ($store) {
+        $self->{STORE} = $store;
+    }
+    else {
+        $self = 0;
+    }
+    bless $self, $class;
+
+    return $self;
+
 
 }
 
@@ -60,7 +85,7 @@ sub verify_callback {
         }
         elsif ( $cert_error == 18 ) {
             # X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT:
-            $ok = 1;
+            $ok = $ok; # Disabled not in Verify509
         }
         elsif ( $cert_error == 24 ) {
             # X509_V_ERR_INVALID_CA:

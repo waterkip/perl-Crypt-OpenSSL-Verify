@@ -3,7 +3,15 @@ Version History
 TBD
 
     Bugfixes
-
+        176adeb Change to use object for Crypt::OpenSSL::Verify
+        6af1067 Update LICENSE info and add Documentation to Verify.xs
+        83f714d Add a Contributing Statement
+        a6b3828 inc issue with Module::Install
+        9071d2e Add Changes
+        4149e9d Remove META.yml that was added by mistake
+        f64897a Disable author tests by default and t/06-verify-expired-cert.t as it is not ready
+        88e952b File::Slurp is a Dependency for tests
+        9f11632 Add Github Action
         7920d43 Fixes #5 - Replace Certs and CAs with files that will pass without overides
         aa3d47b Fixes #4 - Test re-declare variables
         510ec69 Add to .gitignore and Update time or v0.10

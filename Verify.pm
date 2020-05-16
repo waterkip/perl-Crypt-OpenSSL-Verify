@@ -183,14 +183,7 @@ need to verify that the signing certificate is valid.
 =head1 METHODS
 
 =head2 new()
-=over
-           (
-               CAfile => $cafile_path
-               CApath => '/etc/ssl/certs',     # Optional
-               noCAfile => 1,                  # Optional
-               noCApath => 0                   # Optional
-           );
-=back
+
 Constructor. Returns an OpenSSL Verify instance, set up with the given CA.
 
 Arguments:
@@ -199,6 +192,15 @@ Arguments:
  * CApath => $ca_path           - path to a directory containg hashed CA Certificates
  * noCAfile => 0 or 1           - Default CAfile should not be loaded if TRUE
  * noCApath => 0 or 1           - Default CApath should not be loaded if TRUE
+ * strict_certs => 0 or 1       - Do not override any OpenSSL verify errors
+
+   (
+       CAfile => $cafile_path
+       CApath => '/etc/ssl/certs',     # Optional
+       noCAfile => 1,                  # Optional
+       noCApath => 0,                  # Optional
+       strict_certs = 1                # Default (Optional) 
+   );
 
 =head2  new('t/cacert.pem');
 

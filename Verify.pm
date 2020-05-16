@@ -199,7 +199,7 @@ Arguments:
        CApath => '/etc/ssl/certs',     # Optional
        noCAfile => 1,                  # Optional
        noCApath => 0,                  # Optional
-       strict_certs = 1                # Default (Optional) 
+       strict_certs => 1               # Default (Optional) 
    );
 
 =head2  new('t/cacert.pem');

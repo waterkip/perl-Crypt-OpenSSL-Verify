@@ -1,5 +1,12 @@
 Version History
 
+0.13
+    Bugfixes
+        e2cdf3a Increment Version 0.13
+        457a2c7 Add pod info for strict_certs
+        1c623db Indent pod to fix formatting
+        cf42091 Increment Version, Update changes and add =pod to Verify.xs
+
 0.12-TRIAL
     Bugfixes
         9156a97 Merge pull request #7 from timlegge/new-as-object

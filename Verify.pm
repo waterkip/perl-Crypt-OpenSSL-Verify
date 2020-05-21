@@ -7,7 +7,7 @@ require 5.010;
 
 our $VERSION = '0.13';
 
-use Crypt::OpenSSL::X509;
+use Crypt::OpenSSL::X509 1.807;
 
 BOOT_XS: {
     require DynaLoader;
@@ -152,7 +152,7 @@ Crypt::OpenSSL::Verify - OpenSSL Verify certificate verification in XS.
 =head1 SYNOPSIS
 
   use Crypt::OpenSSL::Verify;
-  use Crypt::OpenSSL::X509;
+  use Crypt::OpenSSL::X509 1.807;
 
   my $ca = Crypt::OpenSSL::Verify->new(
                 CAfile => 't/cacert.pem',

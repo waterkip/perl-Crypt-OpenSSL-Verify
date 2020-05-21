@@ -1,13 +1,21 @@
 Version History
 
-0.13
+0.14-TRIAL
+    Bugfixes
+        62a7aed Increment Version
+        0862601 Require at least 1.807 Crypt::OpenSSL::X509
+        e4b3506 remove x bit from Makefile.PL
+        40d6c2e Fix pod documentation issue
+        cdb334d (tag: 0.13) Update Changes
+
+0.13    Sat, 16 May 2020 13:36:10 GMT
     Bugfixes
         e2cdf3a Increment Version 0.13
         457a2c7 Add pod info for strict_certs
         1c623db Indent pod to fix formatting
         cf42091 Increment Version, Update changes and add =pod to Verify.xs
 
-0.12-TRIAL
+0.12-TRIAL      Fri, 15 May 2020 22:01:20 GMT
     Bugfixes
         9156a97 Merge pull request #7 from timlegge/new-as-object
         92ffc20 Fixes #8 openssh returns different error on freebsd

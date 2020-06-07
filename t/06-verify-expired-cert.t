@@ -1,6 +1,6 @@
 use Test::More;
 use Crypt::OpenSSL::Verify;
-use Crypt::OpenSSL::X509 1.807;
+use Crypt::OpenSSL::X509;
 use File::Slurp qw(read_file);
 
 my $v = Crypt::OpenSSL::Verify->new('t/cacert.pem');

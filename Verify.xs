@@ -11,6 +11,7 @@
 #include <openssl/pem.h>
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
+#include <openssl/x509_vfy.h>
 
 typedef X509_STORE *Crypt__OpenSSL__Verify;
 typedef X509 *Crypt__OpenSSL__X509;
@@ -83,6 +84,7 @@ int verify_cb(struct OPTIONS * options, int ok, X509_STORE_CTX * ctx)
     return ok;
 }
 #endif
+
 =head2 int cb1(ok, ctx)
 
 The link to the Perl verify_callback() sub.  This called by OpenSSL
@@ -113,8 +115,8 @@ static int cb1(ok, ctx)
     int count;
     int i;
 
-    /* printf("Callback pointer: %p\n", ctx); */
-    /* printf("Callback UL of pointer %lu\n", PTR2UV(ctx)); */
+    //printf("Callback pointer: %p\n", ctx);
+    //printf("Callback UL of pointer %lu\n", PTR2UV(ctx));
     ENTER;
     SAVETMPS;
 
@@ -138,6 +140,7 @@ static int cb1(ok, ctx)
 
     return i;
 }
+
 =head2 ssl_error(void)
 
 Returns the string description of the ssl error
@@ -203,19 +206,22 @@ the pointer to X509_Store.
 
 Crypt::OpenSSL::Verify _new(class, options)
 =cut
-UV _new(class, options)
+
+SV * _new(class, options)
     SV *class
     HV *options
 
     PREINIT:
 
-        X509_LOOKUP * lookup = NULL;
+        X509_LOOKUP * cafile_lookup = NULL;
+        X509_LOOKUP * cadir_lookup = NULL;
         X509_STORE * store = NULL;
         SV **svp;
         SV *CAfile = NULL;
         SV *CApath = NULL;
-        int noCApath = 0, noCAfile = 0;
-        int strict_certs = 1; /* Default is strict openSSL verify */
+        int noCApath = 0;
+        int noCAfile = 0;
+        int strict_certs = 1; // Default is strict openSSL verify
 
     CODE:
 
@@ -252,64 +258,58 @@ UV _new(class, options)
             }
         }
 
-    /* BEGIN Source apps.c setup_verify() */
-    store = X509_STORE_new();
-    if (store == NULL) {
-        X509_STORE_free(store);
-        croak("failure to allocate x509 store: %s", ssl_error());
-    }
+        store = X509_STORE_new();
 
-    /* In strict mode do not allow any errors to be ignore */
-    if ( ! strict_certs ) {
-        X509_STORE_set_verify_cb_func(store, cb1);
-    }
+        if (store == NULL) {
+            X509_STORE_free(store);
+            croak("failure to allocate x509 store: %s", ssl_error());
+        }
 
-    /* Load the CAfile to the store as a certificate to lookup against */
-    if (CAfile != NULL || !noCAfile) {
-        /* Add a lookup structure to the store to load a file */
-        lookup = X509_STORE_add_lookup(store, X509_LOOKUP_file());
-        if (lookup == NULL) {
+        if (!strict_certs)
+            X509_STORE_set_verify_cb_func(store, cb1);
+
+        if (noCAfile) {
+            X509_LOOKUP_init(cafile_lookup);
+        }
+        else {
+            cafile_lookup = X509_STORE_add_lookup(store, X509_LOOKUP_file());
+        }
+
+        if (cafile_lookup == NULL) {
             X509_STORE_free(store);
             croak("failure to add lookup to store: %s", ssl_error());
         }
+
         if (CAfile != NULL) {
-            if (!X509_LOOKUP_load_file
-                (lookup, SvPV_nolen(CAfile), X509_FILETYPE_PEM)) {
+            if (!X509_STORE_load_locations(store, SvPV_nolen(CAfile), NULL)) {
                 X509_STORE_free(store);
                 croak("Error loading file %s: %s\n", SvPV_nolen(CAfile),
                     ssl_error());
             }
-        } else {
-            X509_LOOKUP_load_file(lookup, NULL, X509_FILETYPE_DEFAULT);
         }
-    }
 
-    /* Load the CApath to the store as a hash dir lookup against */
-    if (CApath != NULL || !noCApath) {
-        /* Add a lookup structure to the store to load hash dir */
-        lookup = X509_STORE_add_lookup(store, X509_LOOKUP_hash_dir());
-        if (lookup == NULL) {
-            X509_STORE_free(store);
-            croak("failure to add hash_dir lookup to store: %s", ssl_error());
+        if (noCApath) {
+            X509_LOOKUP_init(cadir_lookup);
         }
+        else {
+            cadir_lookup = X509_STORE_add_lookup(store, X509_LOOKUP_hash_dir());
+        }
+
+        if (cadir_lookup == NULL) {
+            X509_STORE_free(store);
+            croak("failure to add lookup to store: %s", ssl_error());
+        }
+
         if (CApath != NULL) {
-            if (!X509_LOOKUP_add_dir(lookup, SvPV_nolen(CApath),
-                    X509_FILETYPE_PEM)) {
+            if (!X509_LOOKUP_add_dir(cadir_lookup, SvPV_nolen(CApath), X509_FILETYPE_PEM)) {
+                X509_STORE_free(store);
                 croak("Error loading directory %s\n", SvPV_nolen(CApath));
             }
-        } else {
-            X509_LOOKUP_add_dir(lookup, NULL, X509_FILETYPE_DEFAULT);
         }
-    }
 
-    /* Pass the pointer as an integer so it can return
-     * unscathed in the call to ctx_error_code() from Perl */
-    RETVAL = PTR2UV(store);
+        RETVAL = newRV_noinc((SV*) store);
 
-    //printf("X509_STORE - Pointer to RETVAL: %p\n", store);
-    //printf("X509_STORE - RETVAL: %lu\n", RETVAL);
-    ERR_clear_error();
-    /* END Source apps.c setup_verify() */
+        //ERR_clear_error();
 
     OUTPUT:
 
@@ -364,8 +364,7 @@ int verify(self, x509)
 
     CODE:
         SV **svp;
-        X509_STORE * store;
-        store = 0;
+        X509_STORE * store = NULL;
         //bool strict_certs = 1;
         //struct OPTIONS trust_options;
         //trust_options.trust_expired = 0;
@@ -384,11 +383,10 @@ int verify(self, x509)
 
         if (hv_exists(self, "STORE", strlen("STORE"))) {
             svp = hv_fetch(self, "STORE", strlen("STORE"), 0);
-            if (SvIOKp(*svp)) {
-                store = (X509_STORE *) INT2PTR(UV, SvIV(*svp));
-            } else {
-                croak("STORE: Integer not found in self!\n");
+            if (!SvROK(*svp)) {
+                croak("STORE is invalid!\n");
             }
+            store = (X509_STORE *) SvRV(*svp);
         } else {
             croak("STORE not found in self!\n");
         }

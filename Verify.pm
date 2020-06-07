@@ -56,13 +56,11 @@ sub new {
             }
         }
     }
+
     my $opt = $self;
     my $store = _new( $class, $opt ) ;
     if ($store) {
         $self->{STORE} = $store;
-    }
-    else {
-        $self = 0;
     }
     bless $self, $class;
 

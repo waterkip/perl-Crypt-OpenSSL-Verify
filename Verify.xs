@@ -342,7 +342,9 @@ SV * new(class, ...)
 
         RETVAL = sv_bless( self, gv_stashpv( class, 0 ) );
 
-        //ERR_clear_error();
+        // Empty the currect thread error queue
+        // https://www.openssl.org/docs/man1.1.1/man3/ERR_clear_error.html
+        ERR_clear_error();
 
     OUTPUT:
 

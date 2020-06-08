@@ -163,6 +163,27 @@ static const char *ctx_error(X509_STORE_CTX * ctx)
     return X509_verify_cert_error_string(X509_STORE_CTX_get_error(ctx));
 }
 
+// Taken from p5-Git-Raw
+STATIC HV *ensure_hv(SV *sv, const char *identifier) {
+    if (!SvROK(sv) || SvTYPE(SvRV(sv)) != SVt_PVHV)
+    croak("Invalid type for '%s', expected a hash", identifier);
+
+    return (HV *) SvRV(sv);
+}
+
+static int ssl_store_destroy(pTHX_ SV* var, MAGIC* magic) {
+    X509_STORE * store;
+
+    store = (X509_STORE *) magic->mg_ptr;
+    if (!store)
+        return 0;
+
+    X509_STORE_free(store);
+    return 1;
+}
+
+static const MGVTBL store_magic = { NULL, NULL, NULL, NULL, ssl_store_destroy };
+
 MODULE = Crypt::OpenSSL::Verify    PACKAGE = Crypt::OpenSSL::Verify
 
 PROTOTYPES: DISABLE
@@ -207,17 +228,19 @@ the pointer to X509_Store.
 Crypt::OpenSSL::Verify _new(class, options)
 =cut
 
-SV * _new(class, options)
-    SV *class
-    HV *options
+SV * new(class, ...)
+    const char * class
 
     PREINIT:
+
+        SV * CAfile = NULL;
+
+        HV * options = newHV();
 
         X509_LOOKUP * cafile_lookup = NULL;
         X509_LOOKUP * cadir_lookup = NULL;
         X509_STORE * store = NULL;
         SV **svp;
-        SV *CAfile = NULL;
         SV *CApath = NULL;
         int noCApath = 0;
         int noCAfile = 0;
@@ -225,11 +248,15 @@ SV * _new(class, options)
 
     CODE:
 
-        (void)SvPV_nolen(class);
 
-        if (hv_exists(options, "CAfile", strlen("CAfile"))) {
-            svp = hv_fetch(options, "CAfile", strlen("CAfile"), 0);
-            CAfile = *svp;
+        if (items > 1) {
+            if (ST(1) != NULL)
+                // TODO: ensure_string_sv
+                CAfile = ST(1);
+
+            if (items > 2)
+                options = ensure_hv(ST(2), "options");
+
         }
 
         if (hv_exists(options, "noCAfile", strlen("noCAfile"))) {
@@ -307,7 +334,13 @@ SV * _new(class, options)
             }
         }
 
-        RETVAL = newRV_noinc((SV*) store);
+
+        HV * attributes = newHV();
+
+        SV *const self = newRV_noinc( (SV *)attributes );
+        hv_store( attributes, "STORE", 5, newRV_noinc((SV*)store), 0 );
+
+        RETVAL = sv_bless( self, gv_stashpv( class, 0 ) );
 
         //ERR_clear_error();
 

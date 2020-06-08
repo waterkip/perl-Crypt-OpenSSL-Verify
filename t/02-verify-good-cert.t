@@ -16,11 +16,13 @@ my $ret = $v->verify($cert);
 ok($ret, "t/cert.pem verified");
 
 $v = Crypt::OpenSSL::Verify->new(
-    CAfile => 't/cacert.pem',
-    CApath => '/etc/ssl/certs',
-    noCAfile => 0,
-    noStore => 0,
-    );
+    't/cacert.pem',
+    {
+        CApath   => '/etc/ssl/certs',
+        noCAfile => 0,
+        noStore  => 0,
+    }
+);
 ok($v);
 
 $ret = $v->verify($cert);

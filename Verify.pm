@@ -19,32 +19,6 @@ BOOT_XS: {
       ->( __PACKAGE__, $VERSION );
 }
 
-sub new {
-    my $class = shift;
-
-    my $self = {};
-
-    if (@_ == 1) {
-        $self = {
-            CAfile       => shift,
-            strict_certs => 0, # Maintain original functionality
-        };
-    }
-    else {
-        my %args = @_;
-        foreach (keys %args) {
-            $self->{$_} = $args{$_};
-        }
-    }
-
-    my $store = $class->_new($self) ;
-    $self->{STORE} = $store;
-
-    bless $self, $class;
-
-    return $self;
-}
-
 # Register the sub pcb1
 register_verify_cb( \&verify_callback );
 

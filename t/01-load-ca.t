@@ -2,21 +2,16 @@ use Test::More;
 use Crypt::OpenSSL::Verify;
 
 my $v = Crypt::OpenSSL::Verify->new('t/cacert.pem');
-ok($v);
+isa_ok($v, 'Crypt::OpenSSL::Verify');
 
 $v = Crypt::OpenSSL::Verify->new(
-    CAfile   => 't/cacert.pem',
-    CApath   => '/etc/ssl/certs',
-    noCAfile => 0,
-    noStore  => 0,
+    't/cacert.pem',
+    {
+        CApath   => '/etc/ssl/certs',
+        noCAfile => 0,
+        noStore  => 0,
+    }
 );
-
 isa_ok($v, 'Crypt::OpenSSL::Verify');
-
-$v = Crypt::OpenSSL::Verify->new('t/cacert.pem');
-
-isa_ok($v, 'Crypt::OpenSSL::Verify');
-
-pass('ok');
 
 done_testing;

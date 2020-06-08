@@ -216,16 +216,27 @@ void register_verify_cb(fn)
         else
             SvSetSV(callback, fn);
 
-=head _new
+=head new
 
-The main function to setup the OpenSSL Store to hold the CAfile and to
-configure the options for the verification.  In particular it sets the
-CAfile, and CApat, noCAfile and noCApath if provided.
+Constructs the object ready to verify the certificates.
+It also sets the callback function.
 
-It also sets the callback function and returns a an integer value containing
-the pointer to X509_Store.
+    Crypt::OpenSSL::Verify->new(CAfile, options);
 
-Crypt::OpenSSL::Verify _new(class, options)
+For users coming from L<Crypt::OpenSSL::VerifyX509>, you should
+instantiate the object using:
+
+    Crypt::OpenSSL::Verify->new(CAfile, { strict_certs => 0 } );
+
+User who do not want a CAfile but want to use the defaults please use:
+
+    Crypt::OpenSSL::Verify->new(undef);
+
+The object created is similar to running the following command with the
+C<openssl verify> command line tool: C<< openssl verify [ -CApath
+/path/to/certs ] [ -noCApath ] [ -noCAfile ] [ -CAfile /path/to/file ]
+cert.pem >>
+
 =cut
 
 SV * new(class, ...)

@@ -8,13 +8,13 @@ use File::Spec::Functions qw(catfile);
 package Test::Bug;
     use Exporter qw(import);
 
-    our @EXPORT = qw(test_null_pointer_bug);
+    our @EXPORT = qw(test_null_operation_bug);
 
     use Crypt::OpenSSL::Verify;
     use File::Slurp qw(read_file);
     use Crypt::OpenSSL::X509;
 
-    sub test_null_pointer_bug {
+    sub test_null_operation_bug {
         my ($ca, $cert) = @_;
 
         my $x = Crypt::OpenSSL::Verify->new($ca);
@@ -28,7 +28,7 @@ package main;
     my @warn;
     local $SIG{__WARN__} = sub { push(@warn, @_) };
 
-    Test::Bug::test_null_pointer_bug(
+    Test::Bug::test_null_operation_bug(
         catfile(qw(t cacert.pem)),
         catfile(qw(t cert.pem))
     );

@@ -21,7 +21,9 @@ struct OPTIONS {
    bool  trust_no_local;
    bool  trust_onelogin;
 };
+
 =pod
+
 =head1 NAME
 
 Verify.xs - C interface to OpenSSL to verify certificates
@@ -93,7 +95,9 @@ to the Perl verify_callback() sub.  It gets a return code from Perl
 and returns it to OpenSSL
 
 =head3 Parameters
+
 =over
+
 =item ok
     * ok - the result of the certificate verification in OpenSSL
             ok = 1, !ok = 0
@@ -102,8 +106,8 @@ and returns it to OpenSSL
     * ctx - Pointer to the X509_Store_CTX that OpenSSL includes the
             error codes in
 =back
-=cut
 
+=cut
 
 static SV *callback = (SV *) NULL;
 
@@ -205,6 +209,7 @@ Called by the Perl code to register which Perl sub is
 the OpenSSL Verify Callback
 
 =cut
+
 void register_verify_cb(fn)
     SV *fn
 
@@ -362,12 +367,15 @@ SV * new(class, ...)
         RETVAL
 
 =head2 ctx_error_code(ctx)
+
 Called by the Perl code's verify_callback() to get the error code
 from SSL from the ctx
 
 Receives the pointer to the ctx as an integer that is converted back
 to the point address to be used
+
 =cut
+
 int ctx_error_code(ctx)
     UV ctx;
 
@@ -384,6 +392,7 @@ int ctx_error_code(ctx)
         RETVAL
 
 =head2 verify(self, x509)
+
 The actual verify function that calls OpenSSL to verify the x509 Cert that
 has been passed in as a parameter against the store that was setup in _new()
 
@@ -398,6 +407,7 @@ Contains details about Crypt::OpenSSL::Verify including  the STORE
 Certificate to verify
 
 =back
+
 =cut
 
 int verify(self, x509)

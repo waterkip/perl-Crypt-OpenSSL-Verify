@@ -8,6 +8,20 @@ Version History
 
     Where to start:
 
+    So for a few minutes we were incompatable with less that 5.014
+    but Wesley came through with a fix.
+
+    This was a large cleanup refactor by Wesley with me watching and
+    learning from the sidelines.  Not a lot of functional changes but
+    it does a lot of things differently (correct?) and the documentation
+    is much improved.
+
+        1c57034 Update changes
+        4103463 And just like that works with perl 5.010
+        b5ace5a Merge pull request #11 from waterkip/readable
+        ca526b3 Be backward compatible and use Devel::PPort
+        c33c18f noStore is a duplicate and no longer supported
+        1d8b065 Perl 5.14 is now the minimum supported version
         fe68fea Magic mg_findext requires perl >=5.014
         cdf5d01 Merge pull request #10 from waterkip/readable
         9528321 Add Test::Exception as test dep

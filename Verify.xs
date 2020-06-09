@@ -370,7 +370,8 @@ SV * new(class, ...)
 
         SV *const self = newRV_noinc( (SV *)attributes );
 
-        sv_magic(store, NULL, PERL_MAGIC_ext, (const char *)x509_store, 0);
+        sv_magicext(store, NULL, PERL_MAGIC_ext,
+            &store_magic, (const char *)x509_store, 0);
 
         hv_store(attributes, "STORE", 5, store, 0);
 
@@ -459,7 +460,7 @@ int verify(self, x509)
 
         svp = hv_fetch(self, "STORE", strlen("STORE"), 0);
 
-        if (!SvMAGICAL(*svp) || (mg = mg_find(*svp, PERL_MAGIC_ext)) == NULL)
+        if (!SvMAGICAL(*svp) || (mg = mg_findext(*svp, PERL_MAGIC_ext, &store_magic)) == NULL)
             croak("STORE is invalid");
 
         store = (X509_STORE *) mg->mg_ptr;

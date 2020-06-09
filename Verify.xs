@@ -13,7 +13,6 @@
 #include <openssl/x509v3.h>
 #include <openssl/x509_vfy.h>
 
-typedef X509_STORE *Crypt__OpenSSL__Verify;
 typedef X509 *Crypt__OpenSSL__X509;
 
 struct OPTIONS {

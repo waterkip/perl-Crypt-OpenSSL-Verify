@@ -212,6 +212,7 @@ Arguements:
 =head1 AUTHOR
 
 Timothy Legge <timlegge@gmail.com>
+Wesley Schwengle <waterkip>
 
 =head1 COPYRIGHT
 
@@ -220,6 +221,7 @@ this distribution, including binary files, unless explicitly noted
 otherwise.
 
 Copyright 2020 Timothy Legge
+Copyright 2020 Wesley Schwengle
 
 Based on the Original Crypt::OpenSSL::VerifyX509 by
 

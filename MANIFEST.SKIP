@@ -1,0 +1,10 @@
+MANIFEST.SKIP
+MANIFEST.BAK
+MANIFEST.bak
+Makefile.PL.old
+Makefile.old
+Crypt-OpenSSL-Verify*
+.github/*
+.git/*
+blib/*
+.gitignore

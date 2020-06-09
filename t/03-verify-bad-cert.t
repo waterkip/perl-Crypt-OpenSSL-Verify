@@ -47,7 +47,6 @@ $v = Crypt::OpenSSL::Verify->new(
     {
     CApath => '/etc/ssl/certs',
     noCAfile => 0,
-    noStore => 0,
 }
     );
 ok($v);

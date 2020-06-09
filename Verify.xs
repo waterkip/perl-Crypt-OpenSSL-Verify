@@ -187,20 +187,6 @@ static int ssl_store_destroy(pTHX_ SV* var, MAGIC* magic) {
 
 static const MGVTBL store_magic = { NULL, NULL, NULL, NULL, ssl_store_destroy };
 
-static int ssl_store_destroy(pTHX_ SV* var, MAGIC* magic) {
-    X509_STORE * store;
-
-    store = (X509_STORE *) magic->mg_ptr;
-    if (!store)
-        return 0;
-
-    X509_STORE_free(store);
-    return 1;
-}
-
-
-static const MGVTBL store_magic = { NULL, NULL, NULL, NULL, ssl_store_destroy };
-
 MODULE = Crypt::OpenSSL::Verify    PACKAGE = Crypt::OpenSSL::Verify
 
 PROTOTYPES: DISABLE

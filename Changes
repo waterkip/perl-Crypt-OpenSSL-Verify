@@ -1,5 +1,32 @@
 Version History
 
+0.15-TRIAL
+    Special thanks to Wesley Schwengle (WATERKIP) who cleaned up
+    a lot of the code, made it readable and fixed a particularly
+    hard to track down bug and most of all fixed a lot I had done
+    the opposite of correctly.
+
+    Where to start:
+
+        fe68fea Magic mg_findext requires perl >=5.014
+        cdf5d01 Merge pull request #10 from waterkip/readable
+        9528321 Add Test::Exception as test dep
+        9337100 Remove duplicate code
+        4e31ee0 Remove typedef for X509_STORE
+        01c5bbc Use sv_magicext and mg_findext
+        2599ec1 Fix null operation bug
+        1f8fc02 Add some more whitespaces in docs
+        c41131d Update documenation of new()
+        d9cad77 Clear the OpenSSL thread error queue
+        a0473ff rename bug test
+        42796e7 Move new to XS code
+        090cdbc Make version dep visible via Makefile.PL so it will actually update when needed
+        a61f2c1 Simplify constructor logic
+        873908c Add test for null pointer issue
+        d6c3189 Make code a bit more readable
+        cb496c5 Update Changes
+        48c0555 Merge pull request #9 from timlegge/trial-14
+
 0.14-TRIAL
     Bugfixes
         62a7aed Increment Version

@@ -1,5 +1,16 @@
 Version History
 
+0.16-TRIAL
+    Bug fix and Pachaging improvements
+
+        e9e6b95 Increment version
+        2d40a41 Fix MANIFEST.SKIP and MANIFEST
+        66b307f hv_store returns NULL on failure and this fixes a compile
+            error on some versions of gcc with a value declared but not used
+        b45e9cd Add MANIFEST
+        c3b41a6 (tag: 0.15-TRIAL) Add documentation
+        06db323 Increment version and final changes update
+
 0.15-TRIAL
     Special thanks to Wesley Schwengle (WATERKIP) who cleaned up
     a lot of the code, made it readable and fixed a particularly

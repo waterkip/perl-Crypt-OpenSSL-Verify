@@ -362,7 +362,8 @@ SV * new(class, ...)
         sv_magicext(store, NULL, PERL_MAGIC_ext,
             &store_magic, (const char *)x509_store, 0);
 
-        hv_store(attributes, "STORE", 5, store, 0);
+        if((hv_store(attributes, "STORE", 5, store, 0)) == NULL)
+            croak("unable to init store");
 
         RETVAL = sv_bless( self, gv_stashpv( class, 0 ) );
 

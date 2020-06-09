@@ -1,6 +1,6 @@
 use Test::More;
 use Crypt::OpenSSL::Verify;
-use Crypt::OpenSSL::X509 1.807;
+use Crypt::OpenSSL::X509;
 
 my $v = Crypt::OpenSSL::Verify->new('t/cacert.pem');
 ok($v);
@@ -43,10 +43,12 @@ ok($@ =~ /(verify: unable to get local)|(verify: unknown certificate)/);
 ok(!$ret);
 
 $v = Crypt::OpenSSL::Verify->new(
-    CAfile => 't/cacert.pem',
+    't/cacert.pem',
+    {
     CApath => '/etc/ssl/certs',
     noCAfile => 0,
     noStore => 0,
+}
     );
 ok($v);
 

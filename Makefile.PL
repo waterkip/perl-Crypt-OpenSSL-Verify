@@ -66,6 +66,7 @@ author_requires 'Test::Pod::Coverage' => '1.04';
 
 test_requires 'Test::More' => '0.88';
 test_requires 'File::Slurp';
+test_requires 'Test::Exception';
 
 resources
      license     => "http://dev.perl.org/licenses",

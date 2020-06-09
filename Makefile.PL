@@ -58,7 +58,6 @@ if (-d "/usr/include/openssl") {
 cc_lib_links('crypto');
 cc_optimize_flags('-O3 -Wall -Werror -DOPENSSL_API_COMPAT=0x10100000L');
 
-perl_version '5.014';
 requires 'Crypt::OpenSSL::X509' => '1.807';
 
 author_requires 'Test::NoTabs';

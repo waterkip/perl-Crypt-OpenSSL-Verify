@@ -8,3 +8,4 @@ Crypt-OpenSSL-Verify*
 .git/*
 blib/*
 .gitignore
+dist.ini

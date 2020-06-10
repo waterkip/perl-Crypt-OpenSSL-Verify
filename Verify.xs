@@ -101,13 +101,16 @@ and returns it to OpenSSL
 
 =over
 
-=item ok
-    * ok - the result of the certificate verification in OpenSSL
-            ok = 1, !ok = 0
+=item * ok
 
-=item ctx
-    * ctx - Pointer to the X509_Store_CTX that OpenSSL includes the
-            error codes in
+    The result of the certificate verification in OpenSSL ok = 1, !ok =
+    0
+
+=item * ctx
+
+    Pointer to the X509_Store_CTX that OpenSSL includes the error codes
+    in
+
 =back
 
 =cut
@@ -224,7 +227,7 @@ void register_verify_cb(fn)
         else
             SvSetSV(callback, fn);
 
-=head new
+=head1 new
 
 Constructs the object ready to verify the certificates.
 It also sets the callback function.
@@ -405,7 +408,9 @@ int ctx_error_code(ctx)
 The actual verify function that calls OpenSSL to verify the x509 Cert that
 has been passed in as a parameter against the store that was setup in _new()
 
-=over Parameters
+=head3 Parameters
+
+=over
 
 =item self - self object
 

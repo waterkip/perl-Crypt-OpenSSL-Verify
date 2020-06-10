@@ -26,7 +26,7 @@ sub search_lib {
             return $lib;
         } elsif (-f $path . '/' . $libbase_so) {
             print "$path/$libbase_so\n";
-            print "Found `$_/$libbase_so'.\n";
+            print "Found `$path/$libbase_so'.\n";
             return $lib;
         }
     }

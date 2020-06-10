@@ -3,6 +3,9 @@ Version History
 0.16-TRIAL
     Bug fix and Pachaging improvements
 
+        015cc45 Fix EOL in Verify.pm
+        015cc45 (Fix error in Makefile.PL
+        bd39e72 Update Changes
         e9e6b95 Increment version
         2d40a41 Fix MANIFEST.SKIP and MANIFEST
         66b307f hv_store returns NULL on failure and this fixes a compile

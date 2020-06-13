@@ -502,10 +502,11 @@ int verify(self, x509)
         //    int cb = verify_cb(&trust_options, RETVAL, csc);
         //    RETVAL = cb;
         //}
-        X509_STORE_CTX_free(csc);
 
         if (!RETVAL)
             croak("verify: %s", ctx_error(csc));
+
+        X509_STORE_CTX_free(csc);
 
     OUTPUT:
 

@@ -5,7 +5,7 @@ use warnings;
 
 require 5.010;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 use Crypt::OpenSSL::X509;
 

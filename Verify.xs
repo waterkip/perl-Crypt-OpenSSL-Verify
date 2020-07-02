@@ -15,7 +15,6 @@
 #include <openssl/pem.h>
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
-#include <openssl/x509_vfy.h>
 
 typedef X509 *Crypt__OpenSSL__X509;
 
@@ -89,7 +88,6 @@ int verify_cb(struct OPTIONS * options, int ok, X509_STORE_CTX * ctx)
     return ok;
 }
 #endif
-
 =head2 int cb1(ok, ctx)
 
 The link to the Perl verify_callback() sub.  This called by OpenSSL
@@ -125,8 +123,8 @@ static int cb1(ok, ctx)
     int count;
     int i;
 
-    //printf("Callback pointer: %p\n", ctx);
-    //printf("Callback INT of pointer %lu\n", (unsigned long) PTR2IV(ctx));
+    /* printf("Callback pointer: %p\n", ctx); */
+    /* printf("Callback UL of pointer %lu\n", PTR2UV(ctx)); */
     ENTER;
     SAVETMPS;
 
@@ -150,7 +148,6 @@ static int cb1(ok, ctx)
 
     return i;
 }
-
 =head2 ssl_error(void)
 
 Returns the string description of the ssl error
@@ -255,19 +252,20 @@ SV * new(class, ...)
 
     PREINIT:
 
-        SV * CAfile = NULL;
-
         HV * options = newHV();
 
-        X509_LOOKUP * cafile_lookup = NULL;
-        X509_LOOKUP * cadir_lookup = NULL;
         X509_STORE * x509_store = NULL;
-        SV **svp;
-        SV *CApath = NULL;
-        int noCApath = 0;
-        int noCAfile = 0;
-        int strict_certs = 1; // Default is strict openSSL verify
+        X509_LOOKUP * lookup = NULL;
+
+        SV ** svp;
         SV * store = newSV(0);
+
+        int noCApath = 0, noCAfile = 0;
+
+        SV * CAfile = NULL;
+        SV * CApath = NULL;
+
+        int strict_certs = 1; /* Default is strict openSSL verify */
 
     CODE:
 
@@ -308,55 +306,55 @@ SV * new(class, ...)
             }
         }
 
+        /* BEGIN Source apps.c setup_verify() */
         x509_store = X509_STORE_new();
-
         if (x509_store == NULL) {
             X509_STORE_free(x509_store);
-            croak("failure to allocate x509 store: %s", ssl_error());
+            croak("failure to allocate x509 x509_store: %s", ssl_error());
         }
 
-        if (!strict_certs)
+        /* In strict mode do not allow any errors to be ignore */
+        if ( ! strict_certs ) {
             X509_STORE_set_verify_cb_func(x509_store, cb1);
-
-        if (noCAfile) {
-            X509_LOOKUP_init(cafile_lookup);
-        }
-        else {
-            cafile_lookup = X509_STORE_add_lookup(x509_store, X509_LOOKUP_file());
         }
 
-        if (cafile_lookup == NULL) {
-            X509_STORE_free(x509_store);
-            croak("failure to add lookup to store: %s", ssl_error());
-        }
-
-        if (CAfile != NULL) {
-            if (!X509_STORE_load_locations(x509_store, SvPV_nolen(CAfile), NULL)) {
+        /* Load the CAfile to the x509_store as a certificate to lookup against */
+        if (CAfile != NULL || !noCAfile) {
+            /* Add a lookup structure to the x509_store to load a file */
+            lookup = X509_STORE_add_lookup(x509_store, X509_LOOKUP_file());
+            if (lookup == NULL) {
                 X509_STORE_free(x509_store);
-                croak("Error loading file %s: %s\n", SvPV_nolen(CAfile),
-                    ssl_error());
+                croak("failure to add lookup to x509_store: %s", ssl_error());
+            }
+            if (CAfile != NULL) {
+                if (!X509_LOOKUP_load_file
+                    (lookup, SvPV_nolen(CAfile), X509_FILETYPE_PEM)) {
+                    X509_STORE_free(x509_store);
+                    croak("Error loading file %s: %s\n", SvPV_nolen(CAfile),
+                        ssl_error());
+                }
+            } else {
+                X509_LOOKUP_load_file(lookup, NULL, X509_FILETYPE_DEFAULT);
             }
         }
 
-        if (noCApath) {
-            X509_LOOKUP_init(cadir_lookup);
-        }
-        else {
-            cadir_lookup = X509_STORE_add_lookup(x509_store, X509_LOOKUP_hash_dir());
-        }
-
-        if (cadir_lookup == NULL) {
-            X509_STORE_free(x509_store);
-            croak("failure to add lookup to store: %s", ssl_error());
-        }
-
-        if (CApath != NULL) {
-            if (!X509_LOOKUP_add_dir(cadir_lookup, SvPV_nolen(CApath), X509_FILETYPE_PEM)) {
+        /* Load the CApath to the x509_store as a hash dir lookup against */
+        if (CApath != NULL || !noCApath) {
+            /* Add a lookup structure to the x509_store to load hash dir */
+            lookup = X509_STORE_add_lookup(x509_store, X509_LOOKUP_hash_dir());
+            if (lookup == NULL) {
                 X509_STORE_free(x509_store);
-                croak("Error loading directory %s\n", SvPV_nolen(CApath));
+                croak("failure to add hash_dir lookup to x509_store: %s", ssl_error());
+            }
+            if (CApath != NULL) {
+                if (!X509_LOOKUP_add_dir(lookup, SvPV_nolen(CApath),
+                        X509_FILETYPE_PEM)) {
+                    croak("Error loading directory %s\n", SvPV_nolen(CApath));
+                }
+            } else {
+                X509_LOOKUP_add_dir(lookup, NULL, X509_FILETYPE_DEFAULT);
             }
         }
-
 
         HV * attributes = newHV();
 
